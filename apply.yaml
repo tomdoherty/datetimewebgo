@@ -1,0 +1,122 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: datewebtime
+  labels:
+    name: datewebtime
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: date
+  namespace: datewebtime
+  labels:
+    app: date
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: date
+  template:
+    metadata:
+      labels:
+        app: date
+    spec:
+      containers:
+      - name: date
+        image: tomdo/date:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time
+  namespace: datewebtime
+  labels:
+    app: time
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: time
+  template:
+    metadata:
+      labels:
+        app: time
+    spec:
+      containers:
+      - name: time
+        image: tomdo/time:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: datewebtime
+  labels:
+    app: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: tomdo/web:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: date
+  namespace: datewebtime
+spec:
+  selector:
+    app: date
+  ports:
+  - name: date
+    protocol: TCP
+    port: 8000
+    targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: time
+  namespace: datewebtime
+spec:
+  selector:
+    app: time
+  ports:
+  - name: time
+    protocol: TCP
+    port: 9000
+    targetPort: 9000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: datewebtime
+spec:
+  type: NodePort
+  selector:
+    app: web
+  ports:
+    - port: 7000
+      nodePort: 30007
