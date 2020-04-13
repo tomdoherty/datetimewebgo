@@ -15,7 +15,7 @@ type dateResponse struct {
 	Date     string
 }
 
-func dateHandler(hostname string) http.Handler {
+func DateHandler(hostname string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		log.Printf("[%s] - [%s] - %s", req.RemoteAddr, req.Proto, req.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
@@ -35,6 +35,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.Handle("/date", dateHandler(hostname))
+	http.Handle("/date", DateHandler(hostname))
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
