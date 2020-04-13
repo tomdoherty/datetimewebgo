@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -65,32 +65,33 @@ func getDateAndTime(hostname, dateurl, timeurl string) http.Handler {
 	})
 }
 
-func getDate(dateurl string) (hostname, date string, err error) {
+func getDateOrTime(dateurl string) (response webResponse, err error) {
 	resp, err := http.Get(dateurl)
 	if err != nil {
-		return "", "", fmt.Errorf("failed to fetch: %w", err)
+		return response, fmt.Errorf("failed to fetch: %w", err)
 	}
 	defer resp.Body.Close()
 
 	var result webResponse
 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", "", fmt.Errorf("failed to decode: %w", err)
+		return response, fmt.Errorf("failed to decode: %w", err)
+	}
+	return result, nil
+}
+
+func getDate(dateurl string) (hostname, date string, err error) {
+	result, err := getDateOrTime(dateurl)
+	if err != nil {
+		return "", "", fmt.Errorf("failed to getDate: %w", err)
 	}
 	return result.Hostname, result.Date, nil
 }
 
 func getTime(timeurl string) (hostname, time string, err error) {
-	resp, err := http.Get(timeurl)
+	result, err := getDateOrTime(timeurl)
 	if err != nil {
-		return "", "", fmt.Errorf("failed to fetch: %w", err)
-	}
-	defer resp.Body.Close()
-
-	var result webResponse
-
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", "", fmt.Errorf("failed to decode: %w", err)
+		return "", "", fmt.Errorf("failed to getTime: %w", err)
 	}
 	return result.Hostname, result.Time, nil
 }
