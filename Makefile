@@ -4,17 +4,17 @@ clean:
 	rm -f date time web
 
 date:
-	go build -a -ldflags '-extldflags "-static"' cmd/date/date.go
+	go build -o date -a -ldflags '-extldflags "-static"' cmd/date/main.go
 	docker build -f build/Dockerfile.date -t tomdo/date:latest .
 	docker push tomdo/date:latest
 
 time:
-	go build -a -ldflags '-extldflags "-static"' cmd/time/time.go
+	go build -o time -a -ldflags '-extldflags "-static"' cmd/time/main.go
 	docker build -f build/Dockerfile.time -t tomdo/time:latest .
 	docker push tomdo/time:latest
 
 web:
-	go build -a -ldflags '-extldflags "-static"' cmd/web/web.go
+	go build -o web -a -ldflags '-extldflags "-static"' cmd/web/main.go
 	docker build -f build/Dockerfile.web -t tomdo/web:latest .
 	docker push tomdo/web:latest
 
