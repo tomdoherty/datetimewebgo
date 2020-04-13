@@ -2,5 +2,5 @@
 
 ```shell
 $ make
-$ kubectl apply -f apply.yaml
+$ kubectl apply -f deployments/apply.yaml
 ```
