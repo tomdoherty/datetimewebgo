@@ -17,3 +17,7 @@ web:
 	go build -a -ldflags '-extldflags "-static"' cmd/web/web.go
 	docker build -f build/Dockerfile.web -t tomdo/web:latest .
 	docker push tomdo/web:latest
+
+test:
+	( cd cmd/date && go test )
+	( cd cmd/time && go test )
