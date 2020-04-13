@@ -15,7 +15,7 @@ type timeResponse struct {
 	Time     string
 }
 
-func timeHandler(hostname string) http.Handler {
+func TimeHandler(hostname string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		log.Printf("[%s] - [%s] - %s", req.RemoteAddr, req.Proto, req.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
@@ -35,6 +35,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.Handle("/time", timeHandler(hostname))
+	http.Handle("/time", TimeHandler(hostname))
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
